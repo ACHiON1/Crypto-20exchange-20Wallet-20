@@ -506,6 +506,56 @@ export default function WalletPage() {
           </>
         )}
       </div>
+
+      {/* Bottom Navigation */}
+      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200">
+        <div className="flex justify-around py-2">
+          <div className="flex flex-col items-center py-2 px-4">
+            <div className="w-6 h-6 text-gray-500 mb-1">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                <path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+              </svg>
+            </div>
+            <span className="text-xs text-gray-500">Home</span>
+          </div>
+          <div className="flex flex-col items-center py-2 px-4">
+            <div className="w-6 h-6 text-gray-500 mb-1">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                <path d="M8 6l4 4 4-4m-8 13l4-4 4 4" />
+              </svg>
+            </div>
+            <span className="text-xs text-gray-500">Trade</span>
+          </div>
+          <div className="flex flex-col items-center py-2 px-4">
+            <div className="w-6 h-6 text-gray-500 mb-1">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                <path d="M9 19c-5 0-8-3-8-8s3-8 8-8 8 3 8 8-3 8-8 8z" />
+                <path d="M21 21l-4.35-4.35" />
+              </svg>
+            </div>
+            <span className="text-xs text-gray-500">Market</span>
+          </div>
+          <div className="flex flex-col items-center py-2 px-4">
+            <div className="w-6 h-6 text-gray-500 mb-1">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                <path d="M12 2l2.5 7.5H22l-6 4.5 2.5 7.5L12 17l-6.5 4.5L8 14 2 9.5h7.5L12 2z" />
+              </svg>
+            </div>
+            <span className="text-xs text-gray-500">Favorites</span>
+          </div>
+          <div className="flex flex-col items-center py-2 px-4">
+            <div className="w-6 h-6 text-blue-600 mb-1">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                <path d="M3 6.4V6.4C3.5 5.07 4.57 4 5.9 4h13.7c.18 0 .26 0 .33.02a.5.5 0 01.35.33c.02.07.02.16.02.33V5.68c0 1.04 0 1.56-.13 1.98a2.5 2.5 0 01-1.15 1.15c-.42.13-.94.13-1.98.13H16M3 6.4V6.4C3.5 7.73 4.57 8.8 5.9 8.8h13.6c.94 0 1.41 0 1.71.29.29.29.29.77.29 1.71v2.8M3 6.4v11.6c0 1.89 0 2.83.59 3.41.58.59 1.52.59 3.41.59h12c.94 0 1.41 0 1.71-.29.29-.29.29-.77.29-1.71v-1.6M21.5 18.4h-2.8c-.94 0-1.41 0-1.71-.29-.29-.29-.29-.77-.29-1.71v-.8c0-.94 0-1.41.29-1.71.29-.29.77-.29 1.71-.29h2.8m0 4.8v-4.8" />
+              </svg>
+            </div>
+            <span className="text-xs text-blue-600 font-medium">Wallet</span>
+          </div>
+        </div>
+        <div className="h-5 bg-white flex justify-center">
+          <div className="w-32 h-1 bg-gray-900 rounded-full mt-2"></div>
+        </div>
+      </div>
     </div>
   );
 }
