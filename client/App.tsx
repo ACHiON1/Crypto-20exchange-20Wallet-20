@@ -23,6 +23,10 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Index />} />
+          <Route path="/wallet" element={<Wallet />} />
+          <Route path="/wallet/transactions" element={<WalletTransactions />} />
+          <Route path="/wallet/send" element={<WalletSend />} />
+          <Route path="/wallet/receive" element={<WalletReceive />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
