@@ -1,4 +1,10 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -6,7 +12,14 @@ import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Separator } from "@/components/ui/separator";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { ArrowLeft, ArrowRight, Wallet, User, Lock, AlertCircle } from "lucide-react";
+import {
+  ArrowLeft,
+  ArrowRight,
+  Wallet,
+  User,
+  Lock,
+  AlertCircle,
+} from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -55,11 +68,11 @@ export default function OnboardingSetupPage() {
       const walletData = {
         name: walletName,
         pin: pin, // In real app, this should be hashed
-        createdAt: new Date().toISOString()
+        createdAt: new Date().toISOString(),
       };
-      
-      localStorage.setItem('walletSetup', JSON.stringify(walletData));
-      navigate('/onboarding/security');
+
+      localStorage.setItem("walletSetup", JSON.stringify(walletData));
+      navigate("/onboarding/security");
     }
   };
 
@@ -69,7 +82,11 @@ export default function OnboardingSetupPage() {
         {/* Header */}
         <div className="text-center py-8">
           <div className="flex items-center justify-center mb-4">
-            <Button variant="outline" size="icon" onClick={() => navigate('/onboarding/welcome')}>
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={() => navigate("/onboarding/welcome")}
+            >
               <ArrowLeft className="h-4 w-4" />
             </Button>
             <div className="flex-1">
@@ -81,14 +98,18 @@ export default function OnboardingSetupPage() {
             </div>
             <div className="w-10 h-10" /> {/* Spacer */}
           </div>
-          
+
           <div className="flex items-center justify-center mb-4">
             <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center">
               <Wallet className="h-6 w-6 text-white" />
             </div>
           </div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Set Up Your Wallet</h1>
-          <p className="text-gray-600 mb-8">Customize your wallet and secure it with a PIN</p>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+            Set Up Your Wallet
+          </h1>
+          <p className="text-gray-600 mb-8">
+            Customize your wallet and secure it with a PIN
+          </p>
         </div>
 
         {/* Setup Form */}
@@ -98,7 +119,9 @@ export default function OnboardingSetupPage() {
               <User className="h-5 w-5" />
               <span>Wallet Information</span>
             </CardTitle>
-            <CardDescription>Give your wallet a name and set up security</CardDescription>
+            <CardDescription>
+              Give your wallet a name and set up security
+            </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
             {/* Wallet Name */}
@@ -138,7 +161,7 @@ export default function OnboardingSetupPage() {
                     placeholder="••••••"
                     maxLength={6}
                     value={pin}
-                    onChange={(e) => setPin(e.target.value.replace(/\D/g, ''))}
+                    onChange={(e) => setPin(e.target.value.replace(/\D/g, ""))}
                     className={errors.pin ? "border-red-500" : ""}
                   />
                   {errors.pin && (
@@ -154,7 +177,9 @@ export default function OnboardingSetupPage() {
                     placeholder="••••••"
                     maxLength={6}
                     value={confirmPin}
-                    onChange={(e) => setConfirmPin(e.target.value.replace(/\D/g, ''))}
+                    onChange={(e) =>
+                      setConfirmPin(e.target.value.replace(/\D/g, ""))
+                    }
                     className={errors.confirmPin ? "border-red-500" : ""}
                   />
                   {errors.confirmPin && (
@@ -167,8 +192,8 @@ export default function OnboardingSetupPage() {
               <Alert>
                 <AlertCircle className="h-4 w-4" />
                 <AlertDescription>
-                  Your PIN will be required to access your wallet and authorize transactions. 
-                  Choose a PIN that's secure but memorable.
+                  Your PIN will be required to access your wallet and authorize
+                  transactions. Choose a PIN that's secure but memorable.
                 </AlertDescription>
               </Alert>
             </div>
@@ -181,7 +206,9 @@ export default function OnboardingSetupPage() {
                 <Checkbox
                   id="terms"
                   checked={agreedToTerms}
-                  onCheckedChange={(checked) => setAgreedToTerms(checked as boolean)}
+                  onCheckedChange={(checked) =>
+                    setAgreedToTerms(checked as boolean)
+                  }
                   className={errors.terms ? "border-red-500" : ""}
                 />
                 <div className="text-sm">
@@ -189,9 +216,16 @@ export default function OnboardingSetupPage() {
                     I agree to the Terms of Service and Privacy Policy
                   </label>
                   <p className="text-gray-500 mt-1">
-                    By checking this box, you acknowledge that you have read and agree to our 
-                    <a href="#" className="text-blue-600 hover:underline ml-1">Terms of Service</a> and 
-                    <a href="#" className="text-blue-600 hover:underline ml-1">Privacy Policy</a>.
+                    By checking this box, you acknowledge that you have read and
+                    agree to our
+                    <a href="#" className="text-blue-600 hover:underline ml-1">
+                      Terms of Service
+                    </a>{" "}
+                    and
+                    <a href="#" className="text-blue-600 hover:underline ml-1">
+                      Privacy Policy
+                    </a>
+                    .
                   </p>
                 </div>
               </div>
@@ -202,18 +236,15 @@ export default function OnboardingSetupPage() {
 
             {/* Action Buttons */}
             <div className="flex flex-col sm:flex-row gap-3 pt-4">
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 className="flex-1"
-                onClick={() => navigate('/onboarding/welcome')}
+                onClick={() => navigate("/onboarding/welcome")}
               >
                 <ArrowLeft className="h-4 w-4 mr-2" />
                 Back
               </Button>
-              <Button 
-                className="flex-1"
-                onClick={handleContinue}
-              >
+              <Button className="flex-1" onClick={handleContinue}>
                 Continue to Security
                 <ArrowRight className="h-4 w-4 ml-2" />
               </Button>
@@ -228,7 +259,10 @@ export default function OnboardingSetupPage() {
             <span>2 of 3</span>
           </div>
           <div className="w-full bg-gray-200 rounded-full h-2">
-            <div className="bg-gradient-to-r from-blue-500 to-purple-600 h-2 rounded-full" style={{ width: '66%' }}></div>
+            <div
+              className="bg-gradient-to-r from-blue-500 to-purple-600 h-2 rounded-full"
+              style={{ width: "66%" }}
+            ></div>
           </div>
         </div>
       </div>
