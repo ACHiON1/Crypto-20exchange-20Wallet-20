@@ -21,6 +21,7 @@ import OnboardingSecurity from "./pages/OnboardingSecurity";
 import Home from "./pages/Home";
 import Trade from "./pages/Trade";
 import Market from "./pages/Market";
+import Favorites from "./pages/Favorites";
 
 const queryClient = new QueryClient();
 
