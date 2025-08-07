@@ -19,7 +19,6 @@ import OnboardingWelcome from "./pages/OnboardingWelcome";
 import OnboardingSetup from "./pages/OnboardingSetup";
 import OnboardingSecurity from "./pages/OnboardingSecurity";
 import Home from "./pages/Home";
-import Trade from "./pages/Trade";
 
 const queryClient = new QueryClient();
 
@@ -42,7 +41,6 @@ const App = () => (
           <Route path="/wallet/transactions" element={<WalletTransactions />} />
           <Route path="/wallet/send" element={<WalletSend />} />
           <Route path="/wallet/receive" element={<WalletReceive />} />
-          <Route path="/trade" element={<Trade />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
