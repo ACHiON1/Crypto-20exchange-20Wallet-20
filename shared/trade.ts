@@ -21,9 +21,9 @@ export interface OrderBook {
   asks: OrderBookEntry[];
 }
 
-export type OrderType = 'market' | 'limit' | 'stop';
-export type OrderSide = 'buy' | 'sell';
-export type OrderStatus = 'pending' | 'filled' | 'cancelled' | 'partial';
+export type OrderType = "market" | "limit" | "stop";
+export type OrderSide = "buy" | "sell";
+export type OrderStatus = "pending" | "filled" | "cancelled" | "partial";
 
 export interface Order {
   id: string;
