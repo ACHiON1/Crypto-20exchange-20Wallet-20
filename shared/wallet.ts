@@ -6,14 +6,14 @@ export interface WalletBalance {
 
 export interface Transaction {
   id: string;
-  type: 'send' | 'receive' | 'deposit' | 'withdrawal';
+  type: "send" | "receive" | "deposit" | "withdrawal";
   amount: number;
   currency: string;
   description: string;
   recipient?: string;
   sender?: string;
   date: string;
-  status: 'pending' | 'completed' | 'failed';
+  status: "pending" | "completed" | "failed";
   fee?: number;
 }
 
