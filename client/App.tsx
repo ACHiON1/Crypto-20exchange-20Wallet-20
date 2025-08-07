@@ -20,6 +20,7 @@ import OnboardingSetup from "./pages/OnboardingSetup";
 import OnboardingSecurity from "./pages/OnboardingSecurity";
 import Home from "./pages/Home";
 import Trade from "./pages/Trade";
+import Market from "./pages/Market";
 
 const queryClient = new QueryClient();
 
