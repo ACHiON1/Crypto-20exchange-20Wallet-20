@@ -30,6 +30,13 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Index />} />
+          <Route path="/onboarding/1" element={<Onboarding1 />} />
+          <Route path="/onboarding/2" element={<Onboarding2 />} />
+          <Route path="/onboarding/3" element={<Onboarding3 />} />
+          <Route path="/onboarding/welcome" element={<OnboardingWelcome />} />
+          <Route path="/onboarding/setup" element={<OnboardingSetup />} />
+          <Route path="/onboarding/security" element={<OnboardingSecurity />} />
+          <Route path="/home" element={<Home />} />
           <Route path="/wallet" element={<Wallet />} />
           <Route path="/wallet/transactions" element={<WalletTransactions />} />
           <Route path="/wallet/send" element={<WalletSend />} />
