@@ -12,6 +12,13 @@ import Wallet from "./pages/Wallet";
 import WalletTransactions from "./pages/WalletTransactions";
 import WalletSend from "./pages/WalletSend";
 import WalletReceive from "./pages/WalletReceive";
+import Onboarding1 from "./pages/Onboarding1";
+import Onboarding2 from "./pages/Onboarding2";
+import Onboarding3 from "./pages/Onboarding3";
+import OnboardingWelcome from "./pages/OnboardingWelcome";
+import OnboardingSetup from "./pages/OnboardingSetup";
+import OnboardingSecurity from "./pages/OnboardingSecurity";
+import Home from "./pages/Home";
 
 const queryClient = new QueryClient();
 
