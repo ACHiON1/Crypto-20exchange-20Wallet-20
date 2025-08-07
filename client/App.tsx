@@ -44,6 +44,7 @@ const App = () => (
           <Route path="/wallet/send" element={<WalletSend />} />
           <Route path="/wallet/receive" element={<WalletReceive />} />
           <Route path="/trade" element={<Trade />} />
+          <Route path="/market" element={<Market />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
