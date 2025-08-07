@@ -8,6 +8,10 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
+import Wallet from "./pages/Wallet";
+import WalletTransactions from "./pages/WalletTransactions";
+import WalletSend from "./pages/WalletSend";
+import WalletReceive from "./pages/WalletReceive";
 
 const queryClient = new QueryClient();
 
