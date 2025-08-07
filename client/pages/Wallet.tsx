@@ -3,20 +3,136 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
-import { Eye, EyeOff, Send, ArrowDownToLine, Plus, TrendingUp, TrendingDown } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { 
+  Eye, 
+  EyeOff, 
+  Send, 
+  ArrowDownToLine, 
+  Plus, 
+  TrendingUp, 
+  TrendingDown,
+  ArrowLeft,
+  ScanLine,
+  Search,
+  Filter
+} from "lucide-react";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Wallet, Transaction } from "@shared/wallet";
+import { Wallet, Transaction, WalletPortfolio, CryptoAsset, PortfolioAllocation } from "@shared/wallet";
+
+// Portfolio Chart Component
+function PortfolioChart({ allocations, totalBalance, totalChange }: { 
+  allocations: PortfolioAllocation[], 
+  totalBalance: number,
+  totalChange: number 
+}) {
+  const circumference = 2 * Math.PI * 100;
+  let currentAngle = 0;
+
+  return (
+    <div className="relative w-56 h-56 mx-auto">
+      <svg className="w-full h-full transform -rotate-90" viewBox="0 0 240 240">
+        {allocations.map((allocation, index) => {
+          const strokeDasharray = (allocation.percentage / 100) * circumference;
+          const strokeDashoffset = circumference - currentAngle;
+          currentAngle += strokeDasharray;
+          
+          return (
+            <circle
+              key={allocation.symbol}
+              cx="120"
+              cy="120"
+              r="100"
+              fill="none"
+              stroke={allocation.color}
+              strokeWidth="20"
+              strokeDasharray={`${strokeDasharray} ${circumference}`}
+              strokeDashoffset={strokeDashoffset}
+              className="transition-all duration-300"
+            />
+          );
+        })}
+      </svg>
+      
+      {/* Center content */}
+      <div className="absolute inset-0 flex flex-col items-center justify-center">
+        <Eye className="w-6 h-6 text-gray-500 mb-2" />
+        <h3 className="text-base font-medium text-gray-900 mb-1">My Balance</h3>
+        <p className="text-base font-medium text-gray-900">${totalBalance.toLocaleString()}</p>
+        <p className={`text-sm font-medium ${totalChange >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+          {totalChange >= 0 ? '+' : ''}{totalChange.toFixed(2)}%
+        </p>
+      </div>
+    </div>
+  );
+}
+
+// Asset Item Component
+function AssetItem({ asset }: { asset: CryptoAsset }) {
+  return (
+    <div className="flex items-center justify-between p-4">
+      <div className="flex items-center gap-3">
+        <div className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center">
+          <img 
+            src={asset.icon} 
+            alt={asset.name} 
+            className="w-10 h-10 rounded-full"
+            onError={(e) => {
+              (e.target as HTMLImageElement).style.display = 'none';
+              (e.target as HTMLImageElement).nextElementSibling!.className = 'flex';
+            }}
+          />
+          <div className="hidden w-10 h-10 rounded-full bg-gray-200 items-center justify-center">
+            <span className="text-xs font-medium">{asset.symbol}</span>
+          </div>
+        </div>
+        <div>
+          <h4 className="font-medium text-gray-900">{asset.symbol}</h4>
+          <p className={`text-sm ${asset.isPositive ? 'text-green-600' : 'text-red-600'}`}>
+            ${asset.price.toLocaleString()}
+          </p>
+        </div>
+      </div>
+      
+      {/* Mini chart placeholder */}
+      <div className="flex flex-col items-center justify-center w-20 h-9">
+        <svg className="w-20 h-6" viewBox="0 0 80 24">
+          <path
+            d="M2 22 L10 18 L18 12 L26 8 L34 14 L42 6 L50 10 L58 4 L66 8 L74 2"
+            fill="none"
+            stroke={asset.isPositive ? "#2563eb" : "#f97316"}
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+        <p className={`text-xs ${asset.isPositive ? 'text-green-600' : 'text-red-600'}`}>
+          {asset.isPositive ? '+' : ''}{asset.change24h.toFixed(2)}%
+        </p>
+      </div>
+      
+      <div className="text-right">
+        <p className="font-medium text-gray-900">{asset.balance.toFixed(6)}</p>
+        <p className={`text-sm ${asset.isPositive ? 'text-green-600' : 'text-red-600'}`}>
+          ${asset.value.toLocaleString()}
+        </p>
+      </div>
+    </div>
+  );
+}
 
 export default function WalletPage() {
   const navigate = useNavigate();
   const [showBalance, setShowBalance] = useState(true);
   const [wallet, setWallet] = useState<Wallet | null>(null);
+  const [portfolio, setPortfolio] = useState<WalletPortfolio | null>(null);
   const [recentTransactions, setRecentTransactions] = useState<Transaction[]>([]);
+  const [activeTab, setActiveTab] = useState("portfolio");
 
   useEffect(() => {
-    // Mock data - replace with actual API calls
-    setWallet({
+    // Mock portfolio data
+    const mockPortfolio: WalletPortfolio = {
       id: "1",
       name: "My Wallet",
       balances: [
@@ -24,8 +140,91 @@ export default function WalletPage() {
         { currency: "EUR", amount: 1890.20, symbol: "€" },
         { currency: "BTC", amount: 0.05423, symbol: "₿" },
       ],
-      totalBalanceUSD: 5240.95
-    });
+      totalBalanceUSD: 2760.23,
+      portfolio: {
+        totalBalance: 2760.23,
+        totalChange24h: 2.60,
+        isPositiveChange: true,
+        assets: [
+          {
+            id: "btc",
+            symbol: "BTC",
+            name: "Bitcoin",
+            icon: "https://api.builder.io/api/v1/image/assets/TEMP/91fe24354d47308debd898ad2f9bb7e7aa95f34b?width=80",
+            balance: 0.042148,
+            price: 30113.80,
+            value: 1270.10,
+            change24h: 2.76,
+            isPositive: true
+          },
+          {
+            id: "eth", 
+            symbol: "ETH",
+            name: "Ethereum",
+            icon: "https://api.builder.io/api/v1/image/assets/TEMP/a19b2c6b9ec5bcbfa301372d4fb8139f3d026e2f?width=80",
+            balance: 0.014914,
+            price: 1801.10,
+            value: 270.10,
+            change24h: -1.02,
+            isPositive: false
+          },
+          {
+            id: "atom",
+            symbol: "ATOM", 
+            name: "Cosmos",
+            icon: "https://api.builder.io/api/v1/image/assets/TEMP/2438814c6b5d6925c34a48e1e9c2594e0a122f0a?width=80",
+            balance: 108.427,
+            price: 8.87,
+            value: 961.75,
+            change24h: 2.05,
+            isPositive: true
+          },
+          {
+            id: "cro",
+            symbol: "CRO",
+            name: "Cronos",
+            icon: "https://api.builder.io/api/v1/image/assets/TEMP/40282d83e973bdcfe31f011feb494fcbd379d074?width=80",
+            balance: 1616.914,
+            price: 0.11765,
+            value: 190.23,
+            change24h: 2.38,
+            isPositive: true
+          },
+          {
+            id: "ada1",
+            symbol: "ADA",
+            name: "Cardano",
+            icon: "https://api.builder.io/api/v1/image/assets/TEMP/6f98a84b320ef6c371ce0838dd841d66072dabf4?width=80",
+            balance: 138.8775,
+            price: 0.49,
+            value: 68.05,
+            change24h: -1.24,
+            isPositive: false
+          },
+          {
+            id: "ada2",
+            symbol: "ADA",
+            name: "Cardano",
+            icon: "https://api.builder.io/api/v1/image/assets/TEMP/4dc4ae109254fcad6a861a5bd006ed0b7cf9a93a?width=80",
+            balance: 1,
+            price: 1.02,
+            value: 1.02,
+            change24h: 0.01,
+            isPositive: true
+          }
+        ],
+        allocations: [
+          { symbol: "BTC", percentage: 46, color: "#FFC457" },
+          { symbol: "ATOM", percentage: 35, color: "#1DC198" },
+          { symbol: "ETH", percentage: 10, color: "#0091C0" },
+          { symbol: "CRO", percentage: 7, color: "#745DE8" },
+          { symbol: "ADA", percentage: 2, color: "#FF58A1" }
+        ]
+      }
+    };
+
+    setPortfolio(mockPortfolio);
+    setWallet(mockPortfolio);
 
     setRecentTransactions([
       {
@@ -87,122 +286,225 @@ export default function WalletPage() {
     return `${prefix}${formatCurrency(transaction.amount, transaction.currency, symbol)}`;
   };
 
-  if (!wallet) {
+  if (!wallet || !portfolio) {
     return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
   }
 
   return (
-    <div className="min-h-screen bg-background p-4 max-w-6xl mx-auto">
-      <div className="space-y-6">
-        {/* Header */}
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold text-foreground">Wallet</h1>
-            <p className="text-muted-foreground">Manage your finances</p>
+    <div className="min-h-screen bg-gray-50">
+      {/* Mobile Header */}
+      <div className="bg-gray-50 px-4 py-3 flex items-center justify-between border-b">
+        <button className="p-2">
+          <ArrowLeft className="w-6 h-6 text-gray-600" />
+        </button>
+        <h1 className="text-lg font-medium text-gray-900">Wallet</h1>
+        <button className="p-2">
+          <ScanLine className="w-6 h-6 text-gray-600" />
+        </button>
+      </div>
+
+      <div className="px-4 py-6">
+        {/* Cards/Portfolio Toggle */}
+        <div className="bg-gray-200 rounded-lg p-1 mb-6">
+          <div className="grid grid-cols-2 gap-1">
+            <button
+              onClick={() => setActiveTab("cards")}
+              className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                activeTab === "cards"
+                  ? "bg-white text-gray-900 shadow-sm"
+                  : "text-gray-600"
+              }`}
+            >
+              Cards
+            </button>
+            <button
+              onClick={() => setActiveTab("portfolio")}
+              className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                activeTab === "portfolio"
+                  ? "bg-white text-gray-900 shadow-sm"
+                  : "text-gray-600"
+              }`}
+            >
+              Portfolio
+            </button>
           </div>
-          <Button variant="outline" size="icon" onClick={() => setShowBalance(!showBalance)}>
-            {showBalance ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-          </Button>
         </div>
 
-        {/* Total Balance Card */}
-        <Card className="border-2">
-          <CardHeader>
-            <CardTitle className="flex items-center justify-between">
-              Total Balance
-              <Badge variant="secondary">USD</Badge>
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-4xl font-bold text-foreground mb-4">
-              {showBalance ? `$${wallet.totalBalanceUSD.toLocaleString('en-US', { minimumFractionDigits: 2 })}` : '••••••'}
-            </div>
-            <div className="flex gap-3">
-              <Button className="flex-1" onClick={() => navigate('/wallet/send')}>
-                <Send className="h-4 w-4 mr-2" />
-                Send
-              </Button>
-              <Button variant="outline" className="flex-1" onClick={() => navigate('/wallet/receive')}>
-                <ArrowDownToLine className="h-4 w-4 mr-2" />
-                Receive
-              </Button>
-              <Button variant="outline" size="icon">
-                <Plus className="h-4 w-4" />
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Balances Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {wallet.balances.map((balance, index) => (
-            <Card key={index}>
-              <CardContent className="pt-6">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm font-medium text-muted-foreground">{balance.currency}</span>
-                  <Avatar className="h-6 w-6">
-                    <AvatarFallback className="text-xs">{balance.currency.slice(0, 2)}</AvatarFallback>
-                  </Avatar>
+        {activeTab === "portfolio" ? (
+          <>
+            {/* Portfolio Allocation Tags */}
+            <div className="flex flex-wrap gap-2 mb-6">
+              {portfolio.portfolio.allocations.map((allocation) => (
+                <div
+                  key={allocation.symbol}
+                  className="px-3 py-1 rounded-lg text-white text-sm font-medium"
+                  style={{ backgroundColor: allocation.color }}
+                >
+                  {allocation.symbol} {allocation.percentage}%
                 </div>
-                <div className="text-2xl font-bold">
-                  {showBalance ? formatCurrency(balance.amount, balance.currency, balance.symbol) : '••••'}
+              ))}
+            </div>
+
+            {/* Portfolio Chart */}
+            <div className="mb-8">
+              <PortfolioChart 
+                allocations={portfolio.portfolio.allocations}
+                totalBalance={portfolio.portfolio.totalBalance}
+                totalChange={portfolio.portfolio.totalChange24h}
+              />
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex justify-center gap-6 mb-8">
+              <div className="flex flex-col items-center">
+                <button className="w-11 h-11 rounded-full bg-blue-600 flex items-center justify-center mb-2">
+                  <Plus className="w-5 h-5 text-white" />
+                </button>
+                <span className="text-sm text-gray-900">Deposit</span>
+              </div>
+              <div className="flex flex-col items-center">
+                <button className="w-11 h-11 rounded-full bg-blue-600 flex items-center justify-center mb-2">
+                  <TrendingUp className="w-5 h-5 text-white" />
+                </button>
+                <span className="text-sm text-gray-900">Send</span>
+              </div>
+              <div className="flex flex-col items-center">
+                <button className="w-11 h-11 rounded-full bg-blue-600 flex items-center justify-center mb-2">
+                  <TrendingDown className="w-5 h-5 text-white" />
+                </button>
+                <span className="text-sm text-gray-900">Receive</span>
+              </div>
+              <div className="flex flex-col items-center">
+                <button className="w-11 h-11 rounded-full bg-blue-600 flex items-center justify-center mb-2">
+                  <ArrowDownToLine className="w-5 h-5 text-white" />
+                </button>
+                <span className="text-sm text-gray-900">Withdraw</span>
+              </div>
+            </div>
+
+            {/* Assets List */}
+            <div className="bg-white rounded-t-3xl shadow-sm">
+              <div className="w-10 h-1 bg-gray-900 rounded-full mx-auto mt-2 mb-4"></div>
+              
+              {/* Assets Header */}
+              <div className="flex items-center justify-between px-4 mb-4">
+                <h2 className="text-base font-medium text-gray-900">My Assets</h2>
+                <div className="flex items-center gap-2">
+                  <Search className="w-6 h-6 text-gray-900" />
+                  <Filter className="w-6 h-6 text-gray-900" />
+                </div>
+              </div>
+
+              {/* Assets List */}
+              <div className="divide-y divide-gray-100">
+                {portfolio.portfolio.assets.map((asset, index) => (
+                  <AssetItem key={`${asset.id}-${index}`} asset={asset} />
+                ))}
+              </div>
+            </div>
+          </>
+        ) : (
+          <>
+            {/* Cards View - Original wallet content */}
+            <Card className="border-2 mb-6">
+              <CardHeader>
+                <CardTitle className="flex items-center justify-between">
+                  Total Balance
+                  <Badge variant="secondary">USD</Badge>
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-4xl font-bold text-foreground mb-4">
+                  {showBalance ? `$${wallet.totalBalanceUSD.toLocaleString('en-US', { minimumFractionDigits: 2 })}` : '••••••'}
+                </div>
+                <div className="flex gap-3">
+                  <Button className="flex-1" onClick={() => navigate('/wallet/send')}>
+                    <Send className="h-4 w-4 mr-2" />
+                    Send
+                  </Button>
+                  <Button variant="outline" className="flex-1" onClick={() => navigate('/wallet/receive')}>
+                    <ArrowDownToLine className="h-4 w-4 mr-2" />
+                    Receive
+                  </Button>
+                  <Button variant="outline" size="icon">
+                    <Plus className="h-4 w-4" />
+                  </Button>
                 </div>
               </CardContent>
             </Card>
-          ))}
-        </div>
 
-        {/* Recent Transactions */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center justify-between">
-              Recent Transactions
-              <Button variant="ghost" size="sm" onClick={() => navigate('/wallet/transactions')}>
-                View All
-              </Button>
-            </CardTitle>
-            <CardDescription>Your latest activity</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {recentTransactions.map((transaction, index) => (
-              <div key={transaction.id}>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-3">
-                    {getTransactionIcon(transaction.type)}
-                    <div>
-                      <p className="font-medium">{transaction.description}</p>
-                      <p className="text-sm text-muted-foreground">
-                        {new Date(transaction.date).toLocaleDateString('en-US', {
-                          month: 'short',
-                          day: 'numeric',
-                          hour: '2-digit',
-                          minute: '2-digit'
-                        })}
-                      </p>
+            {/* Balances Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+              {wallet.balances.map((balance, index) => (
+                <Card key={index}>
+                  <CardContent className="pt-6">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-sm font-medium text-muted-foreground">{balance.currency}</span>
+                      <Avatar className="h-6 w-6">
+                        <AvatarFallback className="text-xs">{balance.currency.slice(0, 2)}</AvatarFallback>
+                      </Avatar>
                     </div>
+                    <div className="text-2xl font-bold">
+                      {showBalance ? formatCurrency(balance.amount, balance.currency, balance.symbol) : '••••'}
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+
+            {/* Recent Transactions */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center justify-between">
+                  Recent Transactions
+                  <Button variant="ghost" size="sm" onClick={() => navigate('/wallet/transactions')}>
+                    View All
+                  </Button>
+                </CardTitle>
+                <CardDescription>Your latest activity</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {recentTransactions.map((transaction, index) => (
+                  <div key={transaction.id}>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-3">
+                        {getTransactionIcon(transaction.type)}
+                        <div>
+                          <p className="font-medium">{transaction.description}</p>
+                          <p className="text-sm text-muted-foreground">
+                            {new Date(transaction.date).toLocaleDateString('en-US', {
+                              month: 'short',
+                              day: 'numeric',
+                              hour: '2-digit',
+                              minute: '2-digit'
+                            })}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <p className={`font-semibold ${
+                          transaction.type === 'receive' || transaction.type === 'deposit' 
+                            ? 'text-green-600' 
+                            : 'text-red-600'
+                        }`}>
+                          {getTransactionAmount(transaction)}
+                        </p>
+                        <Badge 
+                          variant={transaction.status === 'completed' ? 'default' : 
+                                  transaction.status === 'pending' ? 'secondary' : 'destructive'}
+                          className="text-xs"
+                        >
+                          {transaction.status}
+                        </Badge>
+                      </div>
+                    </div>
+                    {index < recentTransactions.length - 1 && <Separator className="mt-4" />}
                   </div>
-                  <div className="text-right">
-                    <p className={`font-semibold ${
-                      transaction.type === 'receive' || transaction.type === 'deposit' 
-                        ? 'text-green-600' 
-                        : 'text-red-600'
-                    }`}>
-                      {getTransactionAmount(transaction)}
-                    </p>
-                    <Badge 
-                      variant={transaction.status === 'completed' ? 'default' : 
-                              transaction.status === 'pending' ? 'secondary' : 'destructive'}
-                      className="text-xs"
-                    >
-                      {transaction.status}
-                    </Badge>
-                  </div>
-                </div>
-                {index < recentTransactions.length - 1 && <Separator className="mt-4" />}
-              </div>
-            ))}
-          </CardContent>
-        </Card>
+                ))}
+              </CardContent>
+            </Card>
+          </>
+        )}
       </div>
     </div>
   );
