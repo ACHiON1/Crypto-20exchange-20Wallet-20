@@ -19,6 +19,7 @@ import OnboardingWelcome from "./pages/OnboardingWelcome";
 import OnboardingSetup from "./pages/OnboardingSetup";
 import OnboardingSecurity from "./pages/OnboardingSecurity";
 import Home from "./pages/Home";
+import Trade from "./pages/Trade";
 
 const queryClient = new QueryClient();
 
