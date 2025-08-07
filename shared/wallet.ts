@@ -36,3 +36,35 @@ export interface ReceiveMoneyData {
   qrCode: string;
   shareableLink: string;
 }
+
+// Portfolio interfaces
+export interface CryptoAsset {
+  id: string;
+  symbol: string;
+  name: string;
+  icon: string;
+  balance: number;
+  price: number;
+  value: number;
+  change24h: number;
+  isPositive: boolean;
+  chartData?: number[];
+}
+
+export interface PortfolioAllocation {
+  symbol: string;
+  percentage: number;
+  color: string;
+}
+
+export interface Portfolio {
+  totalBalance: number;
+  totalChange24h: number;
+  isPositiveChange: boolean;
+  assets: CryptoAsset[];
+  allocations: PortfolioAllocation[];
+}
+
+export interface WalletPortfolio extends Wallet {
+  portfolio: Portfolio;
+}
